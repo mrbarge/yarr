@@ -82,6 +82,7 @@ max_level = 8 -- maximum level before victory (changed to 8)
 z_bonus_count = 10 -- number of z's needed for bonus round
 title_screen = true -- start at the title screen
 title_timer = 0 -- for title screen animation
+leaving_bonus_round = false  -- for anything special post-bonus
 
 -- for debugging 
 -- set to true and change test_score to test bonus round quickly
@@ -112,6 +113,9 @@ function init_game_state()
   wolf.score = debug_bonus and test_score or 0
   wolf.z_caught = 0 -- reset z counter
   
+  wolf.bonus_x = 0
+  wolf.bonus_y = 0
+
   coyote.x = 64 -- center position
   coyote.fire_timer = 0
   coyote.fire_rate = 60 -- reset to initial fire rate
@@ -553,6 +557,10 @@ function start_bonus_round()
   -- increment bonus round counter
   coyote.bonus_rounds += 1
   
+  -- save wolf pre-bonus position
+  wolf.bonus_x = wolf.x
+  wolf.bonus_y = wolf.y
+
   -- reposition wolf at the top center of screen, further below the timer
   wolf.x = 64
   wolf.y = 45 -- moved lower on screen, well below the countdown timer
@@ -603,6 +611,13 @@ function end_bonus_round(success)
   -- reset coyote to center
   coyote.x = 64
   
+  -- reset wolf to pre-bonus position
+  wolf.x = wolf.bonus_x
+  wolf.y = wolf.bonus_y
+
+  -- flag we're leaving
+  leaving_bonus_round = true
+
   -- return to main game music
   -- music(0)
 end
@@ -734,6 +749,12 @@ function draw_normal_game()
   
   -- draw level indicator at the left side of the screen
   print("level "..(difficulty_level + 1).." of "..max_level, 2, 120, 7)
+
+  -- if we're exiting the bonus round, give the player some breathing
+  if (leaving_bonus_round == true) then
+  
+    leaving_bonus_round = false
+  end
 end
 
 function draw_bonus_round()
