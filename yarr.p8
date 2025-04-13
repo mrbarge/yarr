@@ -718,7 +718,7 @@ function draw_title_screen()
   end
   
   -- credits
-  print("wolf z-catcher", 34, 110, 6)
+  print("(c) 1984, gnarrtari inc", 18, 110, 6)
 end
 
 function draw_normal_game()
